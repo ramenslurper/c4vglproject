@@ -1,0 +1,32 @@
+version: "3"
+services:
+  web:
+    image: php:7.4-apache
+    volumes:
+      - /app/www:/var/www/html   # edit to your setup
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db             # edit to your setup to match the db container below
+      - DB_PORT=3306
+      - DB_USER=gluser         # edit to your setup to match the db container below
+      - DB_PASSWORD=password   # edit to your setup to match the db container below
+      - DB_NAME=gldb           # edit to your setup to match the db container below  
+    command: bash -c "docker-php-ext-install pdo_mysql && apache2-foreground"
+  db:
+    image: mysql:latest
+    volumes:
+      - /app/mysql/data:/var/lib/mysql   # edit to your setup
+    environment:
+    # edit to your setup with your own values
+      - MYSQL_USER=gluser
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=secretroot
+      - MYSQL_DATABASE=gldb
+    ports:
+      - 3306:3306
+networks:
+  lamp:
+    external: true
